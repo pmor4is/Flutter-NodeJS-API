@@ -24,6 +24,13 @@ app.post("/api/add_product",(req,res => {
 
     productData.push(productData);
     console.log("final", productData);
+
+    // Mensagem para verificar se foi adicionado com sucesso para o console
+    res.status(200).send({
+        "status_code": 200,
+        "message": "Product added successfully",
+        "product": productData
+    });
 }))
 
 
