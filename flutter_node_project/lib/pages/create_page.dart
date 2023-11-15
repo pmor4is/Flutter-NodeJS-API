@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_node_project/services/api.dart';
 
-class CreateData extends StatefulWidget {
-  const CreateData({super.key});
+class CreatePage extends StatefulWidget {
+  const CreatePage({super.key});
 
   @override
-  State<CreateData> createState() => _CreateDataState();
+  State<CreatePage> createState() => _CreateDataState();
 }
 
-class _CreateDataState extends State<CreateData> {
+class _CreateDataState extends State<CreatePage> {
   // Controllers
   var nameController = TextEditingController();
   var priceController = TextEditingController();
@@ -43,7 +44,17 @@ class _CreateDataState extends State<CreateData> {
                 ),
               ),
               const SizedBox(height: 20,),
-              ElevatedButton(onPressed: (){}, child: const Text("Criar dado"))
+              ElevatedButton(
+                onPressed: (){
+                  var data = {
+                    "productName": nameController.text,
+                    "productPrice": priceController.text,
+                    "productDescription": descriptionController.text,
+                  };
+                  Api.addProduct(data);
+                }, 
+                child: const Text("Criar dado"),
+              ),
             ],
           ),
         ),

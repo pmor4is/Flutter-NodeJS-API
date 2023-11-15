@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_node_project/pages/home_page.dart';
 
-void main() {
+Future main() async {
   runApp(const MyApp());
 }
 
@@ -14,6 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
+      home: const HomeScreen()
     );
   }
 }

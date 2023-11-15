@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_node_project/pages/create_page.dart';
+import 'package:flutter_node_project/pages/delete_page.dart';
+import 'package:flutter_node_project/pages/read_page.dart';
+import 'package:flutter_node_project/pages/update_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,13 +16,39 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Column(
-        children: [
-          ElevatedButton(onPressed: (){}, child: const Text("CREATE")),
-          ElevatedButton(onPressed: (){}, child: const Text("READ")),
-          ElevatedButton(onPressed: (){}, child: const Text("UPDATE")),
-          ElevatedButton(onPressed: (){}, child: const Text("DELETE")),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              child: const Text("CREATE"),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const CreatePage()));
+              },
+            ),
+            const SizedBox(height: 12,),
+            ElevatedButton(
+              child: const Text("READ"),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const FetchData()));
+              },
+            ),
+            const SizedBox(height: 12,),
+            ElevatedButton(
+              child: const Text("UPDATE"),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const UpdatePage()));
+              },
+            ),
+            const SizedBox(height: 12,),
+            ElevatedButton(
+              child: const Text("DELETE"),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const DeletePage()));
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
