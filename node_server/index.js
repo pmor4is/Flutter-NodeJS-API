@@ -23,74 +23,132 @@ mongoose.connect(urlConnection, {
         //post API
         app.post("/api/add_product", async (req, res) => {
 
-            const productData = {
-                "id": productDataStore.length + 1,
-                "productName": req.body.productName,
-                "productPrice": req.body.productPrice,
-                "productDescription": req.body.productDescription,
-            };
+            console.log("Result", req.body);
 
-            productDataStore.push(productData);
-            console.log("final", productData);
+            let data = Product(req.body);
 
-            // Mensagem para verificar se foi adicionado com sucesso para o console
-            res.status(200).send({
-                "status_code": 200,
-                "message": "Product added successfully",
-                "product": productData
-            });
+            try {
+                let dataToStore = await data.save();
+                res.status(200).json(dataToStore);
+            } catch (error) {
+                res.status(400).json({
+                    'status': error.message,
+                })
+            }
+
+            // ABAIXO: ALGORITMO UTILIZADO PARA TESTAR API LOCALMENTE, UTILIZANDO MÉTODO POST
+            // const productData = {
+            //     "id": productDataStore.length + 1,
+            //     "productName": req.body.productName,
+            //     "productPrice": req.body.productPrice,
+            //     "productDescription": req.body.productDescription,
+            // };
+
+            // productDataStore.push(productData);
+            // console.log("final", productData);
+
+            // res.status(200).send({
+            //     "status_code": 200,
+            //     "message": "Product added successfully",
+            //     "product": productData
+            // });
         })
 
         //get API
-        app.get('/api/get_product', (req, res) => {
-            if (productDataStore.length > 0) {
-                res.status(200).send({
-                    'status_code': 200,
-                    'products': productDataStore,
-                });
-            } else {
-                res.status(200).send({
-                    'status_code': 200,
-                    'products': [],
-                });
+        app.get('/api/get_product', async (req, res) => {
+            try {
+                let data = await Product.find();
+                res.status(200).json(data);
+
+            } catch (error) {
+                res.status(500).json(error.message)
             }
+
+            // ABAIXO: ALGORITMO UTILIZADO PARA TESTAR API LOCALMENTE, UTILIZANDO MÉTODO GET
+            // if (productDataStore.length > 0) {
+            //     res.status(200).send({
+            //         'status_code': 200,
+            //         'products': productDataStore,
+            //     });
+            // } else {
+            //     res.status(200).send({
+            //         'status_code': 200,
+            //         'products': [],
+            //     });
+            // }
         })
 
-        //update api
-        //put method
-        // se usar post method, a unica modificação aqui é em app.post("/api/update/:id"...
-        // Já no arquivoapi.dart, deve ser alterado http.post(url, body; body....
+        // Método para buscar um objeto específico
+        app.get('/api/get_product/:id', async (req, res) => {
+            try {
+                let data = await Product.findById(req.params.id);
+                res.status(200).json(data);
 
-        app.put("/api/update/:id", (req, res) => {
+            } catch (error) {
+                res.status(500).json(error.message)
+            }
+
+        })
+
+        // UPDATE API
+
+        app.patch("/api/update/:id", async (req, res) => {
+            let id = req.params.id;
+            let updatedData = req.body;
+            let options = { new: true };
+
+            try {
+                const data = await Product.findByIdAndUpdate(id, updatedData, options);
+                res.send(data);
+
+            } catch (error) {
+                res.send(error.message);
+            }
+
+
+            // ABAIXO: ALGORITMO UTILIZADO PARA TESTAR API LOCALMENTE, UTILIZANDO MÉTODO PUT
+            // Put method
+            // Se usar post method, a unica modificação aqui é em app.post("/api/update/:id"...
+            // Já no arquivoapi.dart, deve ser alterado http.post(url, body; body....
             // Busca o objeto exato que vai ser alterado
-            //req.params.id é String, colocando *1 na frente, ele se torna int
-            let id = req.params.id * 1;
-            let productToUpdate = productDataStore.find(p => p.id === id);
-            let index = productDataStore.indexOf(productToUpdate);
+            // req.params.id é String, colocando *1 na frente, ele se torna int
+            // let id = req.params.id * 1;
+            // let productToUpdate = productDataStore.find(p => p.id === id);
+            // let index = productDataStore.indexOf(productToUpdate);
 
-            productDataStore[index] = req.body;
+            // productDataStore[index] = req.body;
 
-            res.status(200).send({
-                "status": 'success',
-                "message": "Product updated successfully",
-            })
+            // res.status(200).send({
+            //     "status": 'success',
+            //     "message": "Product updated successfully",
+            // })
         })
 
-        app.post("/api/delete/:id", (req, res) => {
-            let id = req.params.id * 1;
-            let productToUpdate = productDataStore.find(p => p.id === id);
-            let index = productDataStore.indexOf(productToUpdate);
+        // DELETE API
+        app.delete("/api/delete/:id", async (req, res) => {
+            
+            let id = req.params.id;
+            try {
+                const data = await Product.findByIdAndDelete(id);
+                res.json({
+                    'status': "Deleted the product ${data.productName} from database",
+                });
+            } catch (error) {
+                res.json(error.message);
+            }
+            
+            // ABAIXO: ALGORITMO UTILIZADO PARA TESTAR API LOCALMENTE, UTILIZANDO MÉTODO POST
+            // let id = req.params.id * 1;
+            // let productToUpdate = productDataStore.find(p => p.id === id);
+            // let index = productDataStore.indexOf(productToUpdate);
 
-            productDataStore.splice(index, 1);
+            // productDataStore.splice(index, 1);
 
-            res.status(204).send({
-                "status": 'success',
-                "message": "Product deleted successfully",
-            })
+            // res.status(204).send({
+            //     "status": 'success',
+            //     "message": "Product deleted successfully",
+            // })
         })
-
-
-
 
     } else {
         console.log(error.message);
